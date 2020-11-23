@@ -17,6 +17,7 @@ int MinHeap::minimum(){
     return heap[0].minDist;
 }
 
+//Number of elements in the heap
 int MinHeap::numElements() {
     return n;
 }
@@ -33,29 +34,47 @@ int MinHeap::extractMin(){
     return min;
 }
 
-//Make the heap
+//Return the vertex of the min node
+int MinHeap::minVertex() {
+    return heap[0].vertex;
+}
+
+//Make the heap using insert
 void MinHeap::makeHeap(graph *g, int startVertex) {
     int numVert = g->getNumVertices();
 
-//    for(int i = 0; i < numVert; i++){ //Loop through every vertex
-//        auto iter = g->getIter(i); //Iterate through the linked list
-//        while(iter != nullptr && iter->vertex != -1){
-//            if(i == startVertex) //If inserting a connection from start of the search algo, it's min dist is its weight
-//                insert(element(iter->vertex, i, iter->weight, iter->weight)); //Assign the min dist to elements immediately connected to the start vertex
-//            else
-//                insert(element(iter->vertex, i, iter->vertex)); //Default min dist is large integer
-//            iter = iter->next;
-//        }
-//    }
-
+    //First add all the vertices without pred vertex
     for(int i = 0; i < numVert; i++){ //Loop through every vertex
         if(i == startVertex) //If inserting a connection from start of the search algo, it's min dist is its weight
-            insert(element(i, 0)); //Assign the min dist to elements immediately connected to the start vertex
+            insert(element(i, 0)); //Assign the min dist to start
         else
             insert(element(i, MAX_HEAP)); //Default min dist is large integer
     }
+
+    //Add all the predecessor vertices
+    for(int i = 0; i < numVert; i++){ //Loop through every vertex, i = predIndex
+        auto iter = g->getIter(i); //Iterate through the linked list
+        while(iter != nullptr && iter->vertex != -1){ //Loop through linked list
+            addPredecessor(i, iter->vertex); //Add the predecessor if necessary
+            iter = iter->next;
+        }
+    }
 }
 
+//Add a predecessor to an index of the
+void MinHeap::addPredecessor(int predecessor, int vertex){
+    //Check if the predecessor already exists
+    for(int i = 0; i < heap[vertex].predVSize; i++){ //Loop through predecessors
+        if(heap[vertex].predV[i] == predecessor){
+            return;
+        }
+    }
+    //Add predecessor
+    heap[vertex].predV[heap[vertex].predVSize] = predecessor;
+    heap[vertex].predVSize ++;
+}
+
+//Insert an element into the minHeap
 void MinHeap::insert(element elm){
     heap[n] = elm;
     n++; //Increase the size of the heap
@@ -72,14 +91,25 @@ void MinHeap::decreaseKey(int index, int newMinDist){
     }
 }
 
+//Check for a new min distance
+void MinHeap::relax(int uVertex, int uDistance, int vVertex, int vWeight){
+    if(uDistance + vWeight < heap[vVertex].minDist)
+        decreaseKey(vVertex, uDistance + vWeight);
+}
+
 //Prints the heap
 void MinHeap::printHeap(){
     std::cout << "Min Dist: " <<std::endl;
     for(int i = 0; i < n; i++)
         std::cout << heap[i].minDist << std::endl;
-    std::cout << "\nVertex: " << std::endl;
-    for(int i = 0; i < n; i++)
-        std::cout << heap[i].vertex << std::endl;
+    std::cout << "\nPredVertex: " << std::endl;
+    for(int i = 0; i < n; i++) {
+        std::cout << "Vertex: ";
+        std::cout << heap[i].vertex << ": ";
+        for (int j = 0; j < heap[i].predVSize; j++)
+            std::cout << heap[i].predV[j] << " ";
+        std::cout << std::endl;
+    }
 }
 
 //Heapify using a bottom up approach for an insertion at a leaf
@@ -94,17 +124,12 @@ void MinHeap::heapifyInsertion(int index) {
     }
 }
 
-//Find the minDist by looking at predecessors
-void MinHeap::setMinDist(int index){
-    heap[index].minDist += heap[heap[index].predV].minDist;
-}
-
 //Heapify top down after the head was changed for a leaf
 void MinHeap::heapifyDeletion(int index){
     //Indexes of left and right children
     int left = 2 * index + 1;
     int right = 2 * index + 2;
-    int smallestChild = 500; //The index smaller of the left and right children
+    int smallestChild = MAX_HEAP; //The index smaller of the left and right children
 
     //Bounds checks
     if(left > n && right > n){} //Both out of bounds
@@ -120,7 +145,7 @@ void MinHeap::heapifyDeletion(int index){
         smallestChild = right;
 
     //If there needs to be a swap
-    if(smallestChild != 500 && heap[smallestChild].minDist < heap[index].minDist ) {
+    if(smallestChild != MAX_HEAP && heap[smallestChild].minDist < heap[index].minDist ) {
         std::swap(heap[index], heap[smallestChild]);
         heapifyDeletion(smallestChild);
     }

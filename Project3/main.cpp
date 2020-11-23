@@ -52,6 +52,7 @@ int main() {
 void Dijkstra(graph adjacencyList, int numOfVertices, int s){ // s - Starting vertex
     int* shortestPath = new int[numOfVertices]; //Shortest path
     int shortestPathSize = 0;
+    int shortestPathDistance = 0; //Distance of the shortest path
 
     for(int i = 0; i < numOfVertices; i++)
         shortestPath[i] = -1; //Initialize vertices to -1 to indicate the path is empty
@@ -63,13 +64,26 @@ void Dijkstra(graph adjacencyList, int numOfVertices, int s){ // s - Starting ve
     q.printHeap();
 
     while(q.numElements() != 0){
-        int u = q.extractMin(); //Min distance, U NEEDS TO BE A VERTEX / element
-        shortestPath[shortestPathSize] = u;
+        int uVertex = q.minVertex(); //Vertex associated with the min distance
+        int uDistance = q.extractMin(); //Min distance
+
+        shortestPath[shortestPathSize] = uVertex;
         shortestPathSize++;
+        shortestPathDistance += uDistance;
 
-        //Find
+        //For each successor vertex v adjacent to u do
+        auto iter = adjacencyList.getIter(uVertex);
+        while(iter != nullptr && iter->vertex != -1){ //Loop through successors to uVertex
+            q.relax(uVertex, uDistance, iter->vertex, iter->weight);
+            iter = iter->next;
+        }
 
+        q.printHeap();
 
+    }
+
+    for(int i = 0; i < shortestPathSize; i++){
+        std::cout << shortestPath[i] << " -> ";
     }
 }
 

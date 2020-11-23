@@ -23,8 +23,6 @@ public:
     int getNumVertices(){return numVert;}
     int getNumEdges(){return numEdge;}
 
-    //int getAdjListWeight(int index){return adjacencyList[index]->weight;}
-
     //Iterate through adjacency List
     node* getIter(int i){return adjacencyList[i];}
     node* newNode(); //Make a new node, should maybe be private
