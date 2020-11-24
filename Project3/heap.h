@@ -7,7 +7,9 @@
 #include "graph.h"
 #include "util.h"
 
-#define PREDV_SIZE 2000
+#define PREDV_SIZE 20000
+#define BEST_PRED_START -1
+#define BEST_PRED_NOT_REACHED -2
 
 class MinHeap{
 public:
@@ -16,7 +18,7 @@ public:
         element(int vertex, int minDist) : vertex{vertex},  minDist{minDist} { //Insertion of a regular element
             //Initialize predV to -1 to indicate emptiness
             for(int i = 0; i < PREDV_SIZE; i++){
-                predV[i] = -1;
+                predV[i] = BEST_PRED_START;
             }
             predVSize = 0;
         }
@@ -24,17 +26,11 @@ public:
         int predV[PREDV_SIZE]; //The predecessors of the current vertex
         int predVSize = 0;
         int minDist; //Current known minimum distance to V, the head
-        int bestPred = -1; //Used in relax, the correct predecessor for the optimal path
+        int bestPred = BEST_PRED_START; //Used in relax, the correct predecessor for the optimal path
     };
-
-    //Returns the min - There must be at least 1 element in the heap to use
-    int minimum();
 
     //Remove and return the min
     element extractMin();
-
-    //Return the vertex of the minimum node
-    int minVertex();
 
     //Prints the heap
     void printHeap();
@@ -42,11 +38,8 @@ public:
     //Create the heap from the adjacency list
     void makeHeap(graph *g, int startVertex);
 
-    //Return the number of elements in the queue
-    int numElements();
-
-    //Get the size of the predV array
-    int getPredVSize(int vertex){ return heap[vertex].predVSize; }
+    //Number of elements in the heap
+    int numElements() {return n;}
 
     //Check for a new min distance
     void relax(element u, int vVertex, int vWeight);

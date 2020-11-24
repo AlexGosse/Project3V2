@@ -7,21 +7,6 @@
 #include "util.h"
 #include <iostream>
 
-//Returns the min - There must be at least 1 element in the heap to use
-int MinHeap::minimum(){
-    //No elements in the heap
-    if(n == 0){
-        std::cout << "Index out of bounds!!!!!!" << std::endl;
-        return INT32_MAX;
-    }
-    return heap[0].minDist;
-}
-
-//Number of elements in the heap
-int MinHeap::numElements() {
-    return n;
-}
-
 //Remove and return the min
 MinHeap::element MinHeap::extractMin(){
     if(n == 0) {
@@ -35,23 +20,6 @@ MinHeap::element MinHeap::extractMin(){
     heapifyDeletion(0);
 
     return min;
-}
-
-////Remove and return the min
-//int MinHeap::extractMin(){
-//    if(n == 0) return -1; //No elements
-//
-//    int min = minimum();
-//    heap[0] = heap[n-1]; //Replace head
-//    n--; //Decrement num of elements in the heap
-//
-//    heapifyDeletion(0);
-//    return min;
-//}
-
-//Return the vertex of the min node
-int MinHeap::minVertex() {
-    return heap[0].vertex;
 }
 
 //Make the heap using insert
@@ -98,12 +66,6 @@ void MinHeap::insert(element elm){
 
 //Reduce the min distance of a connection
 void MinHeap::decreaseKey(int index, int newMinDist){
-//    for(int i = 0; i < n; i++){ //Find index in heap
-//        if(heap[i].vertex == index) {
-//            heap[i].minDist = newMinDist;
-//            heapifyInsertion(i); //Maintain heap property
-//        }
-//    }
     heap[index].minDist = newMinDist;
     heapifyInsertion(index);
 }
@@ -118,11 +80,8 @@ void MinHeap::relax(element u, int vVertex, int vWeight){
     }
 
     if(u.minDist + vWeight < heap[vIndex].minDist) {
+        heap[vIndex].bestPred = u.vertex; //Set the best predecessor
         decreaseKey(vIndex, u.minDist + vWeight); //Update the minDist
-        std::cout << "u.vertex: " << u.vertex << std::endl;
-        std::cout << "heap[vVertex]: " << heap[vVertex].vertex << std::endl;
-        std::cout << "vVertex: " << vVertex << std::endl;
-        heap[vIndex].bestPred = u.vertex;
     }
 }
 
@@ -156,7 +115,7 @@ void MinHeap::heapifyInsertion(int index) {
 
 //Heapify top down after the head was changed for a leaf
 void MinHeap::heapifyDeletion(int index){
-    if(n == 1)
+    if(n == 1) //If there is a single element
         return;
 
     //Indexes of left and right children

@@ -59,19 +59,18 @@ void Dijkstra(graph adjacencyList, int numOfVertices, int s, int e){ // s - Star
         setSize++;
         shortestPathDistance += u.minDist;
 
-
-
         //For each successor vertex v adjacent to u do
         auto iter = adjacencyList.getIter(u.vertex);
         while(iter != nullptr && iter->vertex != -1){ //Loop through successors to uVertex
             q.relax(u, iter->vertex, iter->weight);
             iter = iter->next;
         }
+
         q.printHeap();
     }
     //Print set s
     for(int i = 0; i < numOfVertices; i++){
-        std::cout << setS[i].vertex << ": " << setS[i].minDist << std::endl;
+        std::cout << setS[i].vertex << ": " << setS[i].bestPred << std::endl;
     }
 
     //std::sort(setS, setS + numOfVertices, compare);
