@@ -35,6 +35,7 @@ public:
     //Prints the heap
     void printHeap();
 
+
     //Create the heap from the adjacency list
     void makeHeap(graph *g, int startVertex);
 
@@ -53,9 +54,6 @@ private:
 
     //Heapify top down after the head was changed for a leaf
     void heapifyDeletion(int index);
-
-    //Calculate the total distance from node 1
-    void setMinDist(int index);
 
     //Insert an element into the heap
     void insert(element elm);

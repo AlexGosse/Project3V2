@@ -1,7 +1,6 @@
 //
 // Created by Alex on 11/9/2020.
 //
-
 #include "util.h"
 
 //Split a string by spaces
@@ -21,6 +20,11 @@ int* split(std::string str){
 
     return split;
 }
+
+//Print the shortest path from start to end node
+//void printShortestPath(int s, int e, MinHeap::element *setS, int setSize){
+//
+//}
 
 //void printShortestPath(int s, int e, MinHeap::element *setS, int setSize){
 //    for(int i = 0; i < setSize; i++){
