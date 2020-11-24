@@ -1,9 +1,11 @@
 #include <iostream>
+#include <algorithm>
 #include "heap.h"
 #include "graph.h"
 #include "util.h"
 
-void Dijkstra(graph adjacencyList, int numOfVertices, int s);
+void Dijkstra(graph adjacencyList, int numOfVertices, int s, int e);
+bool compare(MinHeap::element i, MinHeap::element j);
 
 int main() {
     int n;
@@ -33,57 +35,53 @@ int main() {
     int startVertex = 0; //Sample
     int endVertex = 3;
 
-    Dijkstra(adjacencyList, n, startVertex);
-
-//    h.makeHeap(&adjacencyList, startVertex);
-//
-//    std::cout << "Printing Heap" << std::endl;
-//    h.printHeap();
-//    //std::cout << "MIN: " << h.extractMin() << std::endl;
-//    std::cout << "\nBefore heapify: " << std::endl;
-//    h.extractMin();
-//    h.decreaseKey(9, 9);
-//    std::cout << "\nAfter heapify: " << std::endl;
-//    h.printHeap();
+    Dijkstra(adjacencyList, n, startVertex, endVertex);
 
    return 0;
 }
 
-void Dijkstra(graph adjacencyList, int numOfVertices, int s){ // s - Starting vertex
-    int* shortestPath = new int[numOfVertices]; //Shortest path
-    int shortestPathSize = 0;
-    int shortestPathDistance = 0; //Distance of the shortest path
+void Dijkstra(graph adjacencyList, int numOfVertices, int s, int e){ // s - Starting vertex, e - Ending vertex
+    MinHeap::element* setS = new MinHeap::element[numOfVertices]; //Shortest path
+    int setSize = 0;
+    int shortestPathDistance = 0; //Distance of the shortest path through every element
 
-    for(int i = 0; i < numOfVertices; i++)
-        shortestPath[i] = -1; //Initialize vertices to -1 to indicate the path is empty
+    for(int i = 0; i < numOfVertices; i++) {
+        setS[i] = MinHeap::element(-1, MAX_HEAP); //Default initialization
+    }
 
     MinHeap q; //Priority queue q
     q.makeHeap(&adjacencyList, s); //Make the priority queue from the adjacency list, uses insert
 
-    std::cout << "Printing Heap" << std::endl;
-    q.printHeap();
-
     while(q.numElements() != 0){
-        int uVertex = q.minVertex(); //Vertex associated with the min distance
-        int uDistance = q.extractMin(); //Min distance
+        MinHeap::element u = q.extractMin();
 
-        shortestPath[shortestPathSize] = uVertex;
-        shortestPathSize++;
-        shortestPathDistance += uDistance;
+        setS[setSize] = u;
+        setSize++;
+        shortestPathDistance += u.minDist;
+
+
 
         //For each successor vertex v adjacent to u do
-        auto iter = adjacencyList.getIter(uVertex);
+        auto iter = adjacencyList.getIter(u.vertex);
         while(iter != nullptr && iter->vertex != -1){ //Loop through successors to uVertex
-            q.relax(uVertex, uDistance, iter->vertex, iter->weight);
+            q.relax(u, iter->vertex, iter->weight);
             iter = iter->next;
         }
-
         q.printHeap();
-
+    }
+    //Print set s
+    for(int i = 0; i < numOfVertices; i++){
+        std::cout << setS[i].vertex << ": " << setS[i].minDist << std::endl;
     }
 
-    for(int i = 0; i < shortestPathSize; i++){
-        std::cout << shortestPath[i] << " -> ";
-    }
+    //std::sort(setS, setS + numOfVertices, compare);
+
+
+
+    //Print shortest path
+    //printShortestPath(s, e, setS, setSize);
+
 }
+
+bool compare(MinHeap::element i, MinHeap::element j){ return (i.vertex < j.vertex);}
 

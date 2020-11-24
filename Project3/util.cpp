@@ -22,3 +22,13 @@ int* split(std::string str){
     return split;
 }
 
+//void printShortestPath(int s, int e, MinHeap::element *setS, int setSize){
+//    for(int i = 0; i < setSize; i++){
+//        if(setS[i].vertex == e){
+//            int pos = e;
+//            while(setS[pos].vertex != s){
+//                std::cout << setS[pos].vertex << " <- ";
+//            }
+//        }
+//    }
+//}

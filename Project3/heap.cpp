@@ -23,16 +23,31 @@ int MinHeap::numElements() {
 }
 
 //Remove and return the min
-int MinHeap::extractMin(){
-    if(n == 0) return -1; //No elements
-
-    int min = minimum();
+MinHeap::element MinHeap::extractMin(){
+    if(n == 0) {
+        std::cout << "ERROR EXTRACTING MIN: N == 0 " << std::endl;
+        return element(); //No elements, should never happen
+    }
+    element min = heap[0];
     heap[0] = heap[n-1]; //Replace head
     n--; //Decrement num of elements in the heap
 
     heapifyDeletion(0);
+
     return min;
 }
+
+////Remove and return the min
+//int MinHeap::extractMin(){
+//    if(n == 0) return -1; //No elements
+//
+//    int min = minimum();
+//    heap[0] = heap[n-1]; //Replace head
+//    n--; //Decrement num of elements in the heap
+//
+//    heapifyDeletion(0);
+//    return min;
+//}
 
 //Return the vertex of the min node
 int MinHeap::minVertex() {
@@ -83,18 +98,32 @@ void MinHeap::insert(element elm){
 
 //Reduce the min distance of a connection
 void MinHeap::decreaseKey(int index, int newMinDist){
-    for(int i = 0; i < n; i++){
-        if(heap[i].vertex == index) {
-            heap[i].minDist = newMinDist;
-            heapifyInsertion(i); //Maintain heap property
-        }
-    }
+//    for(int i = 0; i < n; i++){ //Find index in heap
+//        if(heap[i].vertex == index) {
+//            heap[i].minDist = newMinDist;
+//            heapifyInsertion(i); //Maintain heap property
+//        }
+//    }
+    heap[index].minDist = newMinDist;
+    heapifyInsertion(index);
 }
 
 //Check for a new min distance
-void MinHeap::relax(int uVertex, int uDistance, int vVertex, int vWeight){
-    if(uDistance + vWeight < heap[vVertex].minDist)
-        decreaseKey(vVertex, uDistance + vWeight);
+void MinHeap::relax(element u, int vVertex, int vWeight){
+    //Find vVertex in heap
+    int vIndex = -1;
+    for(int i = 0; i < n; i++){
+        if(heap[i].vertex == vVertex)
+            vIndex = i;
+    }
+
+    if(u.minDist + vWeight < heap[vIndex].minDist) {
+        decreaseKey(vIndex, u.minDist + vWeight); //Update the minDist
+        std::cout << "u.vertex: " << u.vertex << std::endl;
+        std::cout << "heap[vVertex]: " << heap[vVertex].vertex << std::endl;
+        std::cout << "vVertex: " << vVertex << std::endl;
+        heap[vIndex].bestPred = u.vertex;
+    }
 }
 
 //Prints the heap
@@ -102,7 +131,7 @@ void MinHeap::printHeap(){
     std::cout << "Min Dist: " <<std::endl;
     for(int i = 0; i < n; i++)
         std::cout << heap[i].minDist << std::endl;
-    std::cout << "\nPredVertex: " << std::endl;
+    std::cout << "PredVertex: " << std::endl;
     for(int i = 0; i < n; i++) {
         std::cout << "Vertex: ";
         std::cout << heap[i].vertex << ": ";
@@ -110,6 +139,7 @@ void MinHeap::printHeap(){
             std::cout << heap[i].predV[j] << " ";
         std::cout << std::endl;
     }
+    std::cout << std::endl;
 }
 
 //Heapify using a bottom up approach for an insertion at a leaf
@@ -126,6 +156,9 @@ void MinHeap::heapifyInsertion(int index) {
 
 //Heapify top down after the head was changed for a leaf
 void MinHeap::heapifyDeletion(int index){
+    if(n == 1)
+        return;
+
     //Indexes of left and right children
     int left = 2 * index + 1;
     int right = 2 * index + 2;

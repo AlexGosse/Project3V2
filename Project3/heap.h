@@ -21,16 +21,17 @@ public:
             predVSize = 0;
         }
         int vertex; //The current vertex
-        int predV[PREDV_SIZE]; //The predecessor of the current vertex
+        int predV[PREDV_SIZE]; //The predecessors of the current vertex
         int predVSize = 0;
         int minDist; //Current known minimum distance to V, the head
+        int bestPred = -1; //Used in relax, the correct predecessor for the optimal path
     };
 
     //Returns the min - There must be at least 1 element in the heap to use
     int minimum();
 
     //Remove and return the min
-    int extractMin();
+    element extractMin();
 
     //Return the vertex of the minimum node
     int minVertex();
@@ -48,7 +49,7 @@ public:
     int getPredVSize(int vertex){ return heap[vertex].predVSize; }
 
     //Check for a new min distance
-    void relax(int uVertex, int uDistance, int vVertex, int vWeight);
+    void relax(element u, int vVertex, int vWeight);
 
 private:
     int n = 0; //Size of the heap

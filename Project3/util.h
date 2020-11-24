@@ -10,5 +10,7 @@
 //Split a string by spaces into 3 parts
 int* split(std::string str);
 
+//Print the shortest path from start to end node
+//void printShortestPath(int s, int e, MinHeap::element *setS, int setSize);
 
 #endif //PROJECT3_UTIL_H
