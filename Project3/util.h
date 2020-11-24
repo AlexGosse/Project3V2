@@ -5,12 +5,15 @@
 
 #ifndef PROJECT3_UTIL_H
 #define PROJECT3_UTIL_H
+#include "graph.h"
+#include "heap.h"
 
-#define MAX_HEAP 2000000000 //Large number for a default min dist
+//Dijkstra algorithm
+MinHeap::element* Dijkstra(graph adjacencyList, int numOfVertices, int s);
 
 //Split a string by spaces into 3 parts
 int* split(std::string str);
 
-//void printShortestPath(int s, int e, MinHeap::element *setS, int setSize);
+bool compare(MinHeap::element i, MinHeap::element j);
 
 #endif //PROJECT3_UTIL_H

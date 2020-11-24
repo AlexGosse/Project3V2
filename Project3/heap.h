@@ -4,12 +4,10 @@
 
 #ifndef PROJECT3_HEAP_H
 #define PROJECT3_HEAP_H
-#include "graph.h"
-#include "util.h"
 
 #define PREDV_SIZE 20000
 #define BEST_PRED_START -1
-#define BEST_PRED_NOT_REACHED -2
+#include "graph.h"
 
 class MinHeap{
 public:

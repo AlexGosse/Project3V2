@@ -1,11 +1,10 @@
 #include <iostream>
 #include <algorithm>
-#include "heap.h"
-#include "graph.h"
 #include "util.h"
 
-MinHeap::element* Dijkstra(graph adjacencyList, int numOfVertices, int s);
-bool compare(MinHeap::element i, MinHeap::element j);
+//MinHeap::element* Dijkstra(graph adjacencyList, int numOfVertices, int s);
+//bool compare(MinHeap::element i, MinHeap::element j);
+#define MAX_HEAP 2000000000 //Large number for a default min dist
 
 int main() {
     std::string input = "";
@@ -67,16 +66,19 @@ int main() {
             //Use Dijkstra
             MinHeap::element *setS = Dijkstra(adjacencyList, n, startVertex);
 
+
             //Check if path exists
             if (setS[endVertex].minDist == MAX_HEAP) {
                 std::cout << "Error: node " << endVertex + 1 << " not reachable from node " << startVertex + 1 << std::endl;
+                delete [] setS;
                 goto startLoop;
             }
             //Path exists
             else {
+
                 //Printing the length
                 if (isFindingLength)
-                    std::cout << "LENGTH: " << setS[endVertex].minDist << std::endl;
+                    std::cout << "Length: " << setS[endVertex].minDist << std::endl;
 
                 //Printing the path
                 else {
@@ -89,6 +91,9 @@ int main() {
 
                     //Fill up path
                     while (setS[index].vertex != setS[startVertex].vertex) {
+                        if(index != setS[index].vertex)
+                            index--;
+
                         path[pathIndex] = setS[index].vertex;
                         index = setS[index].bestPred;
                         pathIndex++;
@@ -97,7 +102,7 @@ int main() {
                     path[pathIndex] = setS[startVertex].vertex;
 
                     //Go through the path backward
-                    std::cout << "PATH: ";
+                    std::cout << "Path: ";
                     for (int i = pathIndex; i >= 0; i--) {
                         if (i >= 1)
                             std::cout << path[i] + 1 << ";";
@@ -106,45 +111,10 @@ int main() {
                     }
                 }
             }
-            delete [] setS;
+            delete [] setS; //Memory management
         }
     }
-
     return 0;
 }
 
-MinHeap::element* Dijkstra(graph adjacencyList, int numOfVertices, int s){ // s - Starting vertex, e - Ending vertex
-    MinHeap::element* setS = new MinHeap::element[numOfVertices]; //Shortest path
-    int setSize = 0;
-    int shortestPathDistance = 0; //Distance of the shortest path through every element
-
-    for(int i = 0; i < numOfVertices; i++) {
-        setS[i] = MinHeap::element(-1, MAX_HEAP); //Default initialization
-    }
-
-    MinHeap q; //Priority queue q
-    q.makeHeap(&adjacencyList, s); //Make the priority queue from the adjacency list, uses insert
-
-    while(q.numElements() != 0){
-        MinHeap::element u = q.extractMin();
-
-        setS[setSize] = u;
-        setSize++;
-        shortestPathDistance += u.minDist;
-
-        //For each successor vertex v adjacent to u do
-        auto iter = adjacencyList.getIter(u.vertex);
-        while(iter != nullptr && iter->vertex != -1){ //Loop through successors to uVertex
-            q.relax(u, iter->vertex, iter->weight);
-            iter = iter->next;
-        }
-    }
-
-    //Sort s by vertex
-    std::sort(setS, setS + numOfVertices, compare);
-
-    return setS;
-}
-
-bool compare(MinHeap::element i, MinHeap::element j){ return (i.vertex < j.vertex);}
 

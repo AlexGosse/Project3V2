@@ -4,7 +4,6 @@
 
 #ifndef PROJECT3_GRAPH_H
 #define PROJECT3_GRAPH_H
-#include "util.h"
 
 class graph {
 private:

@@ -3,7 +3,7 @@
 //
 
 #include "graph.h"
-
+#include <iostream>
 //Constructor given number of vertices
 graph::graph(int n, int m) {
     numVert = n;
@@ -37,13 +37,13 @@ void graph::insertElement(int* EdgeInfo){
 //Print entire graph
 void graph::printGraph() {
     for(int i = 0; i < numVert; i++){
-        std::cout << i + 1 << ": "; //Add 1 to adjust for 1 indexed nodes
+        std::cout << i + 1 << " : "; //Add 1 to adjust for 1 indexed nodes
         node* iter = adjacencyList[i];
         while (iter->next != nullptr){
             if(iter->next->next != nullptr)
-                std::cout << "(" << iter->vertex + 1 << ", " <<  iter->weight << "); ";
+                std::cout << "(" << iter->vertex + 1 << "; " <<  iter->weight << "); ";
             else
-                std::cout << "(" << iter->vertex + 1 << ", " <<  iter->weight << ")";
+                std::cout << "(" << iter->vertex + 1 << "; " <<  iter->weight << ")";
 
             iter = iter->next;
         }

@@ -4,8 +4,8 @@
 //
 
 #include "heap.h"
-#include "util.h"
 #include <iostream>
+#define MAX_HEAP 2000000000 //Large number for a default min dist
 
 //Remove and return the min
 MinHeap::element MinHeap::extractMin(){
@@ -89,16 +89,19 @@ void MinHeap::relax(element u, int vVertex, int vWeight){
 void MinHeap::printHeap(){
     std::cout << "Min Dist: " <<std::endl;
     for(int i = 0; i < n; i++)
-        std::cout << heap[i].minDist << std::endl;
+        if(heap[i].vertex == 10 && heap[i].minDist != MAX_HEAP)
+            std::cout << heap[i].minDist << std::endl;
     std::cout << "PredVertex: " << std::endl;
     for(int i = 0; i < n; i++) {
-        std::cout << "Vertex: ";
-        std::cout << heap[i].vertex << ": ";
-        for (int j = 0; j < heap[i].predVSize; j++)
-            std::cout << heap[i].predV[j] << " ";
-        std::cout << std::endl;
+        if(heap[i].vertex == 10 && heap[i].minDist != MAX_HEAP) {
+            std::cout << "Vertex: ";
+            std::cout << heap[i].vertex << ": ";
+            for (int j = 0; j < heap[i].predVSize; j++)
+                std::cout << heap[i].predV[j] << " ";
+            std::cout << std::endl;
+        }
     }
-    std::cout << std::endl;
+    //std::cout << std::endl;
 }
 
 //Heapify using a bottom up approach for an insertion at a leaf
